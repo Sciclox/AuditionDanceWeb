@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDITION CYBER DANCE // ARCADE RHYTHM CLUB</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="gameWrapper">
+        <!-- TOP NAVIGATION / CONTROL BAR -->
+        <header id="topBar">
+            <div class="brand">
+                <span class="brand-badge">PRO EDITION</span>
+                <h1>AUDITION <span>CYBER GROOVE</span></h1>
+            </div>
+            
+            <div class="controls-panel">
+                <div class="control-item">
+                    <label for="songSelect">CANCIÓN</label>
+                    <select id="songSelect">
+                        <option value="115">Cyber Neon (115 BPM - Fácil)</option>
+                        <option value="128" selected>Tokyo Nightclub (128 BPM - Normal)</option>
+                        <option value="142">Hyper K-Pop (142 BPM - Difícil)</option>
+                        <option value="160">Overdrive Techno (160 BPM - Experto)</option>
+                    </select>
+                </div>
+
+                <div class="control-item">
+                    <label for="diffSelect">MODO</label>
+                    <select id="diffSelect">
+                        <option value="4">4-Key Estándar</option>
+                        <option value="chance">Chance Mode (Invertidas)</option>
+                    </select>
+                </div>
+
+                <div class="control-item">
+                    <button id="muteBtn" class="cyber-btn-small" title="Silenciar / Activar Sonido">🔊 AUDIO</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN GAME VIEWPORT -->
+        <main id="stageContainer">
+            <!-- CANVAS ESCENARIO 2D / 3D PERSPECTIVA -->
+            <canvas id="danceCanvas" width="960" height="500"></canvas>
+
+            <!-- FLOATING HUD OVERLAY -->
+            <div id="hudOverlay">
+                <!-- TOP HUD STATS -->
+                <div class="hud-top">
+                    <div class="hud-box" id="scoreCard">
+                        <div class="hud-label">SCORE</div>
+                        <div class="hud-value" id="scoreDisplay">0000000</div>
+                    </div>
+
+                    <div class="hud-center">
+                        <div id="comboDisplay" class="combo-box hidden">
+                            <span id="comboNumber">0</span>
+                            <span class="combo-text">COMBO</span>
+                            <div id="feverBadge" class="fever-tag hidden">FEVER x2</div>
+                        </div>
+                    </div>
+
+                    <div class="hud-box right" id="streakCard">
+                        <div class="hud-label">MAX COMBO // LEVEL</div>
+                        <div class="hud-value"><span id="streakDisplay">0</span> <small id="levelDisplay">LV 1</small></div>
+                    </div>
+                </div>
+
+                <!-- CENTER FLOATING JUDGMENT TEXT -->
+                <div id="judgmentContainer">
+                    <div id="judgmentText" class="judgment-init">PRESS START</div>
+                    <div id="timingOffset" class="timing-sub"></div>
+                </div>
+
+                <!-- BOTTOM DANCE COMMAND DECK -->
+                <div id="commandDeck">
+                    <!-- ARROW SEQUENCE DISPLAY -->
+                    <div class="sequence-ribbon">
+                        <div class="ribbon-label">SECUENCIA DE PASOS</div>
+                        <div id="arrowContainer"></div>
+                    </div>
+
+                    <!-- AUDITION RHYTHM BEAT BAR -->
+                    <div class="beat-bar-wrapper">
+                        <div id="beatBar">
+                            <!-- BEAT DIVISION TICKS -->
+                            <div class="beat-tick" style="left: 0%;"></div>
+                            <div class="beat-tick" style="left: 25%;"></div>
+                            <div class="beat-tick" style="left: 50%;"></div>
+                            <div class="beat-tick" style="left: 75%;"></div>
+                            
+                            <!-- HIT TARGET ZONE (BEAT 4) -->
+                            <div id="hitZone">
+                                <span class="hit-indicator">SPACE</span>
+                            </div>
+
+                            <!-- TRAVELING GLOWING BEAT MARKER -->
+                            <div id="beatMarker">
+                                <div class="marker-core"></div>
+                                <div class="marker-trail"></div>
+                            </div>
+                        </div>
+                        <div class="rhythm-hint">Presiona las flechas en orden y golpea <kbd>ESPACIO</kbd> cuando la esfera entre en la zona dorada</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START SCREEN MODAL OVERLAY -->
+            <div id="startOverlay" class="modal-overlay">
+                <div class="modal-card">
+                    <div class="modal-glow"></div>
+                    <h2>AUDITION <span>WEB ARCADE</span></h2>
+                    <p class="subtitle">AUTÓNOMO // PRO RETRO EDITION</p>
+                    <div class="how-to-play">
+                        <div class="step-card">
+                            <span class="step-num">1</span>
+                            <p>Memoriza e ingresa las <strong>flechas</strong> en orden (o teclas <strong>W, A, S, D</strong>).</p>
+                        </div>
+                        <div class="step-card">
+                            <span class="step-num">2</span>
+                            <p>Sigue la esfera que viaja por la <strong>Barra de Ritmo</strong> al compás de la música.</p>
+                        </div>
+                        <div class="step-card">
+                            <span class="step-num">3</span>
+                            <p>Golpea la <strong>BARRA ESPACIADORA</strong> justo en el centro de la zona dorada para sacar <strong>PERFECT</strong>.</p>
+                        </div>
+                    </div>
+                    <button id="startBtn" class="cyber-btn-large">¡COMENZAR BAILE!</button>
+                </div>
+            </div>
+
+            <!-- RESULTS SCREEN MODAL OVERLAY -->
+            <div id="resultsOverlay" class="modal-overlay hidden">
+                <div class="modal-card results">
+                    <h2>RESULTADOS DE BAILE</h2>
+                    <div class="grade-banner">
+                        <div class="grade-badge" id="resGrade">S</div>
+                        <div class="grade-title" id="resTitle">FANTASTIC GROOVE!</div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-col"><span class="k">Puntaje Final</span><span class="v" id="resScore">0</span></div>
+                        <div class="stat-col"><span class="k">Combo Máximo</span><span class="v" id="resCombo">0</span></div>
+                        <div class="stat-col"><span class="k">Precisión</span><span class="v" id="resAccuracy">0%</span></div>
+                    </div>
+
+                    <div class="breakdown-grid">
+                        <div class="bd-item perfect"><span class="lbl">PERFECT</span><span class="cnt" id="cntPerfect">0</span></div>
+                        <div class="bd-item great"><span class="lbl">GREAT</span><span class="cnt" id="cntGreat">0</span></div>
+                        <div class="bd-item cool"><span class="lbl">COOL</span><span class="cnt" id="cntCool">0</span></div>
+                        <div class="bd-item bad"><span class="lbl">BAD</span><span class="cnt" id="cntBad">0</span></div>
+                        <div class="bd-item miss"><span class="lbl">MISS</span><span class="cnt" id="cntMiss">0</span></div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="restartBtn" class="cyber-btn-large">JUGAR DE NUEVO</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER BAR -->
+        <footer id="footerBar">
+            <div class="key-legend">
+                <span><kbd>←</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>→</kbd> o <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> : Ingresar Pasos</span>
+                <span><kbd>SPACEBAR</kbd> : Marcar Juicio Rítmico</span>
+                <span><kbd>P</kbd> : Pausar / Reanudar</span>
+            </div>
+            <div class="credits">AUDITION ONLINE WEB // PRO MASTERED</div>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
